@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">LifecycleDialogFragment</string>
+    <string name="dialog_simple1_title">Внимание</string>
+    <string name="dialog_simple1_message">Операция выполнена!</string>
+    <string name="dialog_list1_title">Список</string>
+    <string-array name="dialog_list2">
+        <item>Windows</item>
+        <item>Android</item>
+        <item>IOS</item>
+    </string-array>
+    <string name="dialog_parameter_title">Успешно</string>
+    <string name="dialog_parameter_message">Скопировано %d файлов!</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">ОТМЕНА</string>
+</resources>
