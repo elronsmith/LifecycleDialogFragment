@@ -1,4 +1,4 @@
-package ru.elron.examplelifecycledialogfragment
+package ru.elron.examplelifecycledialogfragment.ui.main
 
 import android.app.Application
 import android.util.Log
@@ -10,6 +10,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     val progressLiveData = MutableLiveData<String>()
     var isWorking = false
+    var list2Index = 0
+    val list3TextArray = arrayOf("PC", "PS", "XBOX", "Other")
+    val list3ValueArray = booleanArrayOf(true, false, false, false)
 
     fun startBackgroundTask() {
         if (isWorking) return

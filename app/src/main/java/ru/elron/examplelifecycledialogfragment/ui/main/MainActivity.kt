@@ -1,19 +1,19 @@
-package ru.elron.examplelifecycledialogfragment
+package ru.elron.examplelifecycledialogfragment.ui.main
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.activity_main.*
+import ru.elron.examplelifecycledialogfragment.R
+import ru.elron.examplelifecycledialogfragment.databinding.ActivityMainBinding
+import ru.elron.examplelifecycledialogfragment.ui.fragment.MyFragmentActivity
 import ru.elron.examplelifecycledialogfragment.view.LifecycleDialogFragment
-import ru.elron.examplelifecycledialogfragment.view.LifecycleDialogFragmentBuilder
-import ru.elron.examplelifecycledialogfragment.view.LifecycleDialogFragmentListener
 
 /**
  * Этот пример показывает как сделать чтобы диалоги отображались после поворота экрана
@@ -21,32 +21,35 @@ import ru.elron.examplelifecycledialogfragment.view.LifecycleDialogFragmentListe
  * Вопрос
  * Из фрагмента диалог вызывается так же как и из активити
  */
-class MainActivity : AppCompatActivity(), LifecycleDialogFragmentBuilder,
-    LifecycleDialogFragmentListener {
+class MainActivity : AppCompatActivity(), LifecycleDialogFragment.Builder,
+    LifecycleDialogFragment.Listener {
     val TAG = MainActivity::class.java.simpleName
 
     val DIALOG_SIMPLE1      = 100
     val DIALOG_SIMPLE2      = 200
     val DIALOG_LIST1        = 300
     val DIALOG_LIST2        = 400
-    val DIALOG_PARAMETER    = 500
-    val DIALOG_PROGRESS     = 600
+    val DIALOG_LIST3        = 500
+    val DIALOG_PARAMETER    = 600
+    val DIALOG_PROGRESS     = 700
 
     val ARG_COUNT           = "arg_count"
 
+    lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        button1.setOnClickListener {
+        binding.button1.setOnClickListener {
             LifecycleDialogFragment()
                 .withId(DIALOG_SIMPLE1)
                 .show(this)
         }
-        button2.setOnClickListener {
+        binding.button2.setOnClickListener {
             LifecycleDialogFragment()
                 .withId(DIALOG_SIMPLE2)
                 .withTitle("Заголовок")
@@ -54,31 +57,40 @@ class MainActivity : AppCompatActivity(), LifecycleDialogFragmentBuilder,
                 .withCancelable(false)
                 .show(this)
         }
-        button3.setOnClickListener {
+        binding.button3.setOnClickListener {
             LifecycleDialogFragment()
                 .withId(DIALOG_LIST1)
                 .show(this)
 
         }
-        button4.setOnClickListener {
+        binding.button4.setOnClickListener {
             LifecycleDialogFragment()
                 .withId(DIALOG_LIST2)
-                .withItems(arrayOf("PC", "PS", "XBOX", "Other"))
-                .withCheckedItems(booleanArrayOf(true, false, false, false))
+                .withIndex(viewModel.list2Index)
+                .withItems(viewModel.list3TextArray)
                 .show(this)
         }
-        button5.setOnClickListener {
+        binding.button5.setOnClickListener {
+            LifecycleDialogFragment()
+                .withId(DIALOG_LIST3)
+                .withItems(viewModel.list3TextArray)
+                .withCheckedItems(viewModel.list3ValueArray)
+                .show(this)
+        }
+        binding.button6.setOnClickListener {
             LifecycleDialogFragment().apply {
                 withId(DIALOG_PARAMETER)
                 getBundle().putInt(ARG_COUNT, 5)
             }.show(this)
         }
-        button6.setOnClickListener {
+        binding.button7.setOnClickListener {
             LifecycleDialogFragment()
                 .withId(DIALOG_PROGRESS)
                 .show(this)
         }
-
+        binding.button8.setOnClickListener {
+            startActivity(Intent(this, MyFragmentActivity::class.java))
+        }
     }
 
     override fun getLifecycleDialogInstance(id: Int, dialogFragment: LifecycleDialogFragment): Dialog {
@@ -100,20 +112,37 @@ class MainActivity : AppCompatActivity(), LifecycleDialogFragmentBuilder,
             DIALOG_LIST1 -> {
                 builder.setTitle(R.string.dialog_list1_title)
                 builder.setItems(
-                    R.array.dialog_list2,
+                    R.array.dialog_list1,
                     DialogInterface.OnClickListener { dialog, which ->
                         Toast.makeText(this, "index = $which", Toast.LENGTH_SHORT).show()
                     })
             }
             DIALOG_LIST2 -> {
-                builder.setTitle(dialogFragment.getBundleTitle())
+                builder.setTitle(R.string.dialog_list2_title)
+                builder.setSingleChoiceItems(
+                    dialogFragment.getBundleItems(),
+                    dialogFragment.getBundleIndex(),
+                    DialogInterface.OnClickListener { dialog, which ->
+                        viewModel.list2Index = which
+                        Toast.makeText(this, "which = $which", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
+                    }
+                )
+            }
+            DIALOG_LIST3 -> {
+                builder.setTitle(R.string.dialog_list3_title)
                 builder.setMultiChoiceItems(
                     dialogFragment.getBundleItems(),
                     dialogFragment.getBundleCheckedItems(),
                     DialogInterface.OnMultiChoiceClickListener { dialog, which, isChecked ->
+                        viewModel.list3ValueArray[which] = isChecked
                         Toast.makeText(this, "#$which = $isChecked", Toast.LENGTH_SHORT).show()
                     })
-                builder.setPositiveButton(R.string.dialog_ok, null)
+                builder.setPositiveButton(
+                    R.string.dialog_ok,
+                    DialogInterface.OnClickListener { dialog, which ->
+
+                    })
             }
             DIALOG_PARAMETER -> {
                 builder.setTitle(R.string.dialog_parameter_title)

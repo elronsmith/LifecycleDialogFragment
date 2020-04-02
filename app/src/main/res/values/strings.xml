@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">LifecycleDialogFragment</string>
+    <string name="activity_my_fragment_title">Fragments</string>
     <string name="dialog_simple1_title">Внимание</string>
     <string name="dialog_simple1_message">Операция выполнена!</string>
-    <string name="dialog_list1_title">Список</string>
+    <string name="dialog_list1_title">Список 1</string>
+    <string name="dialog_list2_title">Список 2</string>
+    <string name="dialog_list3_title">Список 3</string>
+    <string-array name="dialog_list1">
+        <item>Открыть</item>
+        <item>Редактировать</item>
+        <item>Удалить</item>
+    </string-array>
     <string-array name="dialog_list2">
         <item>Windows</item>
         <item>Android</item>
