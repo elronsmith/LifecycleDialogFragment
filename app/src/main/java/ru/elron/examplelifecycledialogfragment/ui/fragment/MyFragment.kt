@@ -1,8 +1,8 @@
 package ru.elron.examplelifecycledialogfragment.ui.fragment
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,21 +13,19 @@ import ru.elron.examplelifecycledialogfragment.databinding.FragmentMyBinding
 import ru.elron.examplelifecycledialogfragment.view.LifecycleDialogFragment
 
 class MyFragment : Fragment(), LifecycleDialogFragment.Builder {
+    private val TAG = MyFragment::class.java.simpleName
+
     val DIALOG_SIMPLE1  = 100
     val DIALOG_SIMPLE2  = 200
 
     lateinit var binding: FragmentMyBinding
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMyBinding.inflate(inflater, container, false)
+        Log.d(TAG, "onCreateView: ")
 
         binding.button1.setOnClickListener {
             LifecycleDialogFragment()
@@ -49,6 +47,8 @@ class MyFragment : Fragment(), LifecycleDialogFragment.Builder {
         id: Int,
         dialogFragment: LifecycleDialogFragment
     ): Dialog {
+        Log.d(TAG, "getLifecycleDialogInstance: ")
+
         val builder = AlertDialog.Builder(requireActivity())
         var dialog: Dialog
 
